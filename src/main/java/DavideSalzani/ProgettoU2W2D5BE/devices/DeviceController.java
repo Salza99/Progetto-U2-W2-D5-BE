@@ -25,7 +25,11 @@ public class DeviceController {
         }
     }
     @GetMapping("")
-    public Page<Device> gatPagesOfDevices(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "deviceStatus") String orderBy){
+    public Page<Device> getPagesOfDevices(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "deviceStatus") String orderBy){
         return deviceService.getAll(page, size, orderBy);
+    }
+    @GetMapping("{id}")
+    public Device getSingleDevice(@PathVariable("id") long id){
+        return deviceService.getSingle(id);
     }
 }

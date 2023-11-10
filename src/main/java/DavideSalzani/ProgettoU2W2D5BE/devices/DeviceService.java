@@ -1,6 +1,7 @@
 package DavideSalzani.ProgettoU2W2D5BE.devices;
 
 import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.NewDeviceDTO;
+import DavideSalzani.ProgettoU2W2D5BE.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,5 +33,8 @@ public class DeviceService {
     public Page<Device> getAll(int page, int size, String orderBy){
         Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
         return deviceRepo.findAll(pageable);
+    }
+    public Device getSingle(long id){
+       return deviceRepo.findById(id).orElseThrow(() -> new NotFoundException("Dispositivo"));
     }
 }
