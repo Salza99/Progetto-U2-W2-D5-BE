@@ -41,6 +41,10 @@ public class UserController {
         }else {
             return userService.patchOnEmail(email, id);
         }
-
+    }
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable long id){
+        userService.deleteUser(id);
     }
 }

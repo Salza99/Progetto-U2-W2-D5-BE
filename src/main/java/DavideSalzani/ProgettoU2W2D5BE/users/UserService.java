@@ -53,4 +53,8 @@ public class UserService {
             return found;
         }
     }
+    public void deleteUser(long id){
+       User toRemove = userRepo.findById(id).orElseThrow(()-> new NotFoundException("User"));
+        userRepo.delete(toRemove);
+    }
 }
