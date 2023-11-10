@@ -54,7 +54,9 @@ public class DeviceService {
             List<Device> newListForUser = new ArrayList<>(u.getAssignedCompanyDevices());
             newListForUser.remove(found);
             u.setAssignedCompanyDevices(newListForUser);
+            found.setAssignedTo(null);
             userRepo.save(u);
+            deviceRepo.save(found);
             if (Objects.equals(body.status().toLowerCase().trim(), Conditions.in_manutenzione.name()) && found.getDeviceStatus() != Conditions.in_manutenzione && found.getDeviceStatus() != Conditions.dismesso) {
                 found.setDeviceStatus(Conditions.in_manutenzione);
                 deviceRepo.save(found);
