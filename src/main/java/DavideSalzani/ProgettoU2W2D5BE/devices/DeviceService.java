@@ -136,4 +136,8 @@ public class DeviceService {
             return found;
         }
     }
+    public void removeDevice(long id){
+        Device toremove = deviceRepo.findById(id).orElseThrow(()-> new NotFoundException("dispositivo"));
+        deviceRepo.delete(toremove);
+    }
 }

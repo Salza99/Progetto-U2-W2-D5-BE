@@ -49,4 +49,9 @@ public class DeviceController {
     public Device turnAvailableDevice(@PathVariable("id") long id){
         return deviceService.turnAvailableDevice(id);
     }
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeDevice(@PathVariable("id") long id){
+        deviceService.removeDevice(id);
+    }
 }
