@@ -1,6 +1,7 @@
 package DavideSalzani.ProgettoU2W2D5BE.users;
 
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.AlreadyExistException;
+import DavideSalzani.ProgettoU2W2D5BE.exceptions.NotFoundException;
 import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.NewUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,5 +33,8 @@ public class UserService {
     public Page<User> getAll(int page, int size, String orderBy){
         Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
         return userRepo.findAll(pageable);
+    }
+    public User getSingleUser(long id){
+        return userRepo.findById(id).orElseThrow(()-> new NotFoundException("User"));
     }
 }

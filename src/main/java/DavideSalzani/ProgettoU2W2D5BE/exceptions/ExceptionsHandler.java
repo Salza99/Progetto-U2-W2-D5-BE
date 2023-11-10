@@ -23,10 +23,14 @@ public class ExceptionsHandler {
             return new ErrorsListDTO(ex.getMessage(), LocalDate.now(), new ArrayList<>());
         }
     }
-
     @ExceptionHandler(AlreadyExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsPayloadDTO handleAlreadyExistException(AlreadyExistException ex){
+        return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
+    }
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorsPayloadDTO handleNotFoundException(NotFoundException ex){
         return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
     }
 }
