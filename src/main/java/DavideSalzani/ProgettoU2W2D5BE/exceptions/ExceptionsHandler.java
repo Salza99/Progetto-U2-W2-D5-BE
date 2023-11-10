@@ -30,7 +30,12 @@ public class ExceptionsHandler {
     }
     @ExceptionHandler(DismissDeviceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorsPayloadDTO DismissDeviceException(DismissDeviceException ex){
+    public ErrorsPayloadDTO handleDismissDeviceException(DismissDeviceException ex){
+        return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
+    }
+    @ExceptionHandler(UnderMaintenanceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsPayloadDTO handleUnderMaintenanceException(UnderMaintenanceException ex){
         return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
     }
     @ExceptionHandler(NotFoundException.class)

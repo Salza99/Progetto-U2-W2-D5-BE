@@ -41,4 +41,8 @@ public class DeviceController {
             return deviceService.underMaintenanceOrDismiss(body, id);
         }
     }
+    @PatchMapping("/assign/{deviceId}/{userId}")
+    public Device patchChangeOwner(@PathVariable("deviceId") long deviceId, @PathVariable("userId") long userId){
+        return deviceService.changeAssignedToUser(deviceId, userId);
+    }
 }

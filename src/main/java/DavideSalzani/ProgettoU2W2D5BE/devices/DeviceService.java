@@ -4,7 +4,9 @@ import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.ChangeStatusInMantainanc
 import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.NewDeviceDTO;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.DismissDeviceException;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.NotFoundException;
+import DavideSalzani.ProgettoU2W2D5BE.exceptions.UnderMaintenanceException;
 import DavideSalzani.ProgettoU2W2D5BE.users.User;
+import DavideSalzani.ProgettoU2W2D5BE.users.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,8 @@ import java.util.Objects;
 public class DeviceService {
     @Autowired
     DeviceRepo deviceRepo;
+    @Autowired
+    UserRepo userRepo;
 
     public long createDevice(NewDeviceDTO body){
 
@@ -49,6 +53,7 @@ public class DeviceService {
             List<Device> newListForUser = new ArrayList<>(u.getAssignedCompanyDevices());
             newListForUser.remove(found);
             u.setAssignedCompanyDevices(newListForUser);
+            userRepo.save(u);
             if (Objects.equals(body.status().toLowerCase().trim(), Conditions.in_manutenzione.name()) && found.getDeviceStatus() != Conditions.in_manutenzione && found.getDeviceStatus() != Conditions.dismesso) {
                 found.setDeviceStatus(Conditions.in_manutenzione);
                 deviceRepo.save(found);
@@ -73,6 +78,37 @@ public class DeviceService {
             }else {
                 throw new DismissDeviceException(id);
             }
+        }
+    }
+    public Device changeAssignedToUser(long deviceId, long userId) {
+        Device foundDevice = deviceRepo.findById(deviceId).orElseThrow(() -> new NotFoundException("dispositivo"));
+        if (foundDevice.getDeviceStatus() == Conditions.dismesso) {
+            throw new DismissDeviceException(deviceId);
+        } else if (foundDevice.getDeviceStatus() == Conditions.in_manutenzione) {
+            throw new UnderMaintenanceException(deviceId);
+        }else if (foundDevice.getAssignedTo() != null) {
+            User exOwner = deviceRepo.findAssignedUserByDeviceId(deviceId);
+            List<Device> newListForExOwner = new ArrayList<>(exOwner.getAssignedCompanyDevices());
+            newListForExOwner.remove(foundDevice);
+            exOwner.setAssignedCompanyDevices(newListForExOwner);
+            userRepo.save(exOwner);
+            User newOwner = userRepo.findById(userId).orElseThrow(()-> new NotFoundException("user"));
+            List<Device> newListForNewOwner = new ArrayList<>(newOwner.getAssignedCompanyDevices());
+            newListForNewOwner.add(foundDevice);
+            newOwner.setAssignedCompanyDevices(newListForNewOwner);
+            userRepo.save(newOwner);
+            foundDevice.setAssignedTo(newOwner);
+            deviceRepo.save(foundDevice);
+            return foundDevice;
+        }else {
+            User newOwner = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("user"));
+            List<Device> newListForNewOwner = new ArrayList<>(newOwner.getAssignedCompanyDevices());
+            newListForNewOwner.add(foundDevice);
+            newOwner.setAssignedCompanyDevices(newListForNewOwner);
+            userRepo.save(newOwner);
+            foundDevice.setAssignedTo(newOwner);
+            deviceRepo.save(foundDevice);
+            return foundDevice;
         }
     }
 }
