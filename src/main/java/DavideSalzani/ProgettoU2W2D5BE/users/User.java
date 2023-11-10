@@ -20,7 +20,7 @@ public class User {
     private String username;
     private String name;
     private String surname;
-    private String Email;
+    private String email;
     @OneToMany(mappedBy = "assignedTo")
     @JsonIgnore
     private List<Device> assignedCompanyDevices;

@@ -1,5 +1,6 @@
 package DavideSalzani.ProgettoU2W2D5BE.users;
 
+import DavideSalzani.ProgettoU2W2D5BE.exceptions.BadRequestException;
 import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.NewUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,11 @@ public class UserController {
 
     @PostMapping("")
     public long createUser(@RequestBody @Validated NewUserDTO body, BindingResult validation){
-        return 2;
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }else {
+            return userService.save(body);
+        }
+
     }
 }

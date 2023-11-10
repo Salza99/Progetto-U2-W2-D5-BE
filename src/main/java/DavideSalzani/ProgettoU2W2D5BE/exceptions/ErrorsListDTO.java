@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record ErrorsListDTO(
+        String message,
         LocalDate timestamp,
         List<String> messageList
 ) {
