@@ -1,6 +1,7 @@
 package DavideSalzani.ProgettoU2W2D5BE.users;
 
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.BadRequestException;
+import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.ChangeUserEmailDTO;
 import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.NewUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,5 +33,14 @@ public class UserController {
     @GetMapping("{id}")
     public User getSingleUser(@PathVariable long id){
         return userService.getSingleUser(id);
+    }
+    @PatchMapping("/email/{id}")
+    public User changeEmail(@RequestBody @Validated ChangeUserEmailDTO email, BindingResult validation,@PathVariable long id ){
+        if (validation.hasErrors()){
+            throw new BadRequestException(validation.getAllErrors());
+        }else {
+            return userService.patchOnEmail(email, id);
+        }
+
     }
 }
