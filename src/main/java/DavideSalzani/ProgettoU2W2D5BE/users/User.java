@@ -17,9 +17,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(unique = true)
     private String username;
     private String name;
     private String surname;
+    @Column(unique = true)
     private String email;
     @OneToMany(mappedBy = "assignedTo")
     @JsonIgnore

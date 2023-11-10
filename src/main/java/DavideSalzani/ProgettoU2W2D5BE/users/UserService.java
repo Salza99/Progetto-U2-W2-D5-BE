@@ -3,6 +3,10 @@ package DavideSalzani.ProgettoU2W2D5BE.users;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.AlreadyExistException;
 import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.NewUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,5 +28,9 @@ public class UserService {
             userRepo.save(u);
             return u.getId();
         }
+    }
+    public Page<User> getAll(int page, int size, String orderBy){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+        return userRepo.findAll(pageable);
     }
 }
