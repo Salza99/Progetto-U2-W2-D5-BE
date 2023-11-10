@@ -1,5 +1,6 @@
 package DavideSalzani.ProgettoU2W2D5BE.devices;
 
+import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.ChangeStatusInMantainanceOrDismissDTO;
 import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.NewDeviceDTO;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,13 @@ public class DeviceController {
     @GetMapping("{id}")
     public Device getSingleDevice(@PathVariable("id") long id){
         return deviceService.getSingle(id);
+    }
+    @PatchMapping("/status/{id}")
+    public Device patchDismissOrMaintenance(@RequestBody @Validated ChangeStatusInMantainanceOrDismissDTO body,BindingResult validation, @PathVariable("id") long id){
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }else{
+            return deviceService.underMaintenanceOrDismiss(body, id);
+        }
     }
 }

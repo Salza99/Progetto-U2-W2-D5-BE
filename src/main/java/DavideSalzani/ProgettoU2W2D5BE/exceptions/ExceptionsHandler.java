@@ -28,6 +28,11 @@ public class ExceptionsHandler {
     public ErrorsPayloadDTO handleAlreadyExistException(AlreadyExistException ex){
         return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
     }
+    @ExceptionHandler(DismissDeviceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsPayloadDTO DismissDeviceException(DismissDeviceException ex){
+        return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
+    }
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorsPayloadDTO handleNotFoundException(NotFoundException ex){

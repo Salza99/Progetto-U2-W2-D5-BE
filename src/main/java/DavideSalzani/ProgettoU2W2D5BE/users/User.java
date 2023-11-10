@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class User {
     @Column(unique = true)
     private String email;
     @OneToMany(mappedBy = "assignedTo")
+    @Cascade(value = CascadeType.ALL)
     @JsonIgnore
     private List<Device> assignedCompanyDevices;
 }
