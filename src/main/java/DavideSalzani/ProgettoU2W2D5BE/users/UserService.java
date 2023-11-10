@@ -5,19 +5,25 @@ import DavideSalzani.ProgettoU2W2D5BE.exceptions.BadRequestException;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.NotFoundException;
 import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.ChangeUserEmailDTO;
 import DavideSalzani.ProgettoU2W2D5BE.users.userDTO.NewUserDTO;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public long save(NewUserDTO body){
         User u = new User();
@@ -56,5 +62,12 @@ public class UserService {
     public void deleteUser(long id){
        User toRemove = userRepo.findById(id).orElseThrow(()-> new NotFoundException("User"));
         userRepo.delete(toRemove);
+    }
+    public User UploadImage(MultipartFile file, long id) throws IOException {
+        User found = userRepo.findById(id).orElseThrow(()-> new NotFoundException("user"));
+        String avatarString = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+        found.setAvatarUrl(avatarString);
+        userRepo.save(found);
+        return found;
     }
 }

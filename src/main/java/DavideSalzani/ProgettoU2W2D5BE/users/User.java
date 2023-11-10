@@ -29,4 +29,5 @@ public class User {
     @Cascade(value = CascadeType.ALL)
     @JsonIgnore
     private List<Device> assignedCompanyDevices;
+    private String avatarUrl;
 }
