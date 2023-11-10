@@ -49,4 +49,10 @@ public class ExceptionsHandler {
     public ErrorsPayloadDTO handleNotFoundException(NotFoundException ex){
         return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
     }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsPayloadDTO handleGenericException(Exception ex){
+        ex.printStackTrace();
+        return new ErrorsPayloadDTO("errore lato server!", LocalDate.now());
+    }
 }
