@@ -45,4 +45,8 @@ public class DeviceController {
     public Device patchChangeOwner(@PathVariable("deviceId") long deviceId, @PathVariable("userId") long userId){
         return deviceService.changeAssignedToUser(deviceId, userId);
     }
+    @PatchMapping("/available/{id}")
+    public Device turnAvailableDevice(@PathVariable("id") long id){
+        return deviceService.turnAvailableDevice(id);
+    }
 }

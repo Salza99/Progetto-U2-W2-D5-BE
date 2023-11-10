@@ -38,6 +38,12 @@ public class ExceptionsHandler {
     public ErrorsPayloadDTO handleUnderMaintenanceException(UnderMaintenanceException ex){
         return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
     }
+    @ExceptionHandler(AlreadyAvailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsPayloadDTO handleAlreadyAvailableException(AlreadyAvailableException ex){
+        return new ErrorsPayloadDTO(ex.getMessage(), LocalDate.now());
+    }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorsPayloadDTO handleNotFoundException(NotFoundException ex){

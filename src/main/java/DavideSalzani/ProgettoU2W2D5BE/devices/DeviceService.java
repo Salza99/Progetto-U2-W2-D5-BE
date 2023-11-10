@@ -2,6 +2,7 @@ package DavideSalzani.ProgettoU2W2D5BE.devices;
 
 import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.ChangeStatusInMantainanceOrDismissDTO;
 import DavideSalzani.ProgettoU2W2D5BE.devices.deviceDTO.NewDeviceDTO;
+import DavideSalzani.ProgettoU2W2D5BE.exceptions.AlreadyAvailableException;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.DismissDeviceException;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.NotFoundException;
 import DavideSalzani.ProgettoU2W2D5BE.exceptions.UnderMaintenanceException;
@@ -98,6 +99,7 @@ public class DeviceService {
             newOwner.setAssignedCompanyDevices(newListForNewOwner);
             userRepo.save(newOwner);
             foundDevice.setAssignedTo(newOwner);
+            foundDevice.setDeviceStatus(Conditions.assegnato);
             deviceRepo.save(foundDevice);
             return foundDevice;
         }else {
@@ -107,8 +109,31 @@ public class DeviceService {
             newOwner.setAssignedCompanyDevices(newListForNewOwner);
             userRepo.save(newOwner);
             foundDevice.setAssignedTo(newOwner);
+            foundDevice.setDeviceStatus(Conditions.assegnato);
             deviceRepo.save(foundDevice);
             return foundDevice;
+        }
+    }
+    public Device turnAvailableDevice(long id) {
+        Device found = deviceRepo.findById(id).orElseThrow(()-> new NotFoundException("dispositivo"));
+        if (found.getDeviceStatus() == Conditions.disponibile ) {
+            throw new AlreadyAvailableException(id);
+        } else if (found.getDeviceStatus() == Conditions.dismesso) {
+            throw new DismissDeviceException(id);
+        }else if (found.getDeviceStatus()== Conditions.assegnato) {
+            User exOwner = deviceRepo.findAssignedUserByDeviceId(id);
+            List<Device> newListForExOwner = new ArrayList<>(exOwner.getAssignedCompanyDevices());
+            newListForExOwner.remove(found);
+            exOwner.setAssignedCompanyDevices(newListForExOwner);
+            userRepo.save(exOwner);
+            found.setDeviceStatus(Conditions.disponibile);
+            found.setAssignedTo(null);
+            deviceRepo.save(found);
+            return found;
+        }else {
+            found.setDeviceStatus(Conditions.disponibile);
+            deviceRepo.save(found);
+            return found;
         }
     }
 }
